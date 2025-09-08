@@ -27,7 +27,6 @@ function InputBarcode() {
   }, [scanned]);
   return (
     <div>
-      <h2>🔍 Quét mã QR / Barcode (Không cần focus)</h2>
       <p>📦 Dữ liệu đã quét: <strong>{scanned}</strong></p>
     </div>
   )
