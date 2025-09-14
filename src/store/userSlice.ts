@@ -8,6 +8,7 @@ type UserStateType = {
     username: string,
     role: string,
     route: {
+      id: string,
       code: string,
       name: string,
     }
@@ -87,6 +88,7 @@ const userSlice = createSlice({
           username: action.payload.name,
           role: action.payload.role,
           route: {
+            id: action.payload.route.id,
             code: action.payload.route.code,
             name: action.payload.route.name,
           },

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Form, Input, Button, message } from 'antd';
 import Image from "next/image";
 import {useDispatch, useSelector} from "react-redux";
@@ -9,9 +9,16 @@ import {AppDispatch, RootState} from "docker-manager-web/store";
 import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+  const user = useSelector((state: RootState) => state.user);
   const router = useRouter();
   const loginLoading = useSelector((state: RootState) => state.user.loginLoading);
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (user.user) {
+      window.location.replace("/stock/load")
+    }
+  }, [user.user]);
 
   const onFinish = async (values: any) => {
     const username = values.username as string;
@@ -37,7 +44,7 @@ const LoginForm = () => {
     <div style={{ maxWidth: 400, margin: '100px auto' }}>
       <div className="mb-6">
         <Image
-          src="/tc-logo.png"
+          src="/gp-logo.png"
           alt="Logo"
           width={400}
           height={150}

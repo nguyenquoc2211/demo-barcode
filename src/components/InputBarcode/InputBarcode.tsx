@@ -1,35 +1,59 @@
-"use client"
-import {useEffect, useRef, useState} from "react";
+"use client";
+import React, { useRef, useEffect, useState } from "react";
+import { Input } from "antd";
+import type { InputRef } from "antd";
 
-function InputBarcode() {
-  const bufferRef = useRef<string>('');
-  const [scanned, setScanned] = useState<string>('');
+const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  const handleInputBarcode = (e: KeyboardEvent)=> {
-    if (e.key === 'Enter' || e.key === 'Return') {
-      setScanned(bufferRef.current);
-      bufferRef.current = '';
-    }
-      else {
-      bufferRef.current += e.key;
-    }
-  }
+interface InputBarcodeProps {
+  onScan: (barcode: string) => void;
+}
+
+function InputBarcode({ onScan }: InputBarcodeProps) {
+  const [value, setValue] = useState('');
+  const bufferRef = useRef<string>("");
+  const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
-    document.addEventListener("keydown", handleInputBarcode)
-
-    // Clear when hook is destroyed
-    return () => document.removeEventListener('keydown', handleInputBarcode);
+    if (inputRef.current && inputRef.current.input) {
+      inputRef.current.input.focus()
+    }
   }, []);
 
-  useEffect(() => {
-    console.log("Scanned", scanned)
-  }, [scanned]);
+  const handleInputBarcode = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const key = e.key;
+
+    if (key === "Enter" || key === "Return") {
+      const scanned = bufferRef.current.trim();
+      if (scanned) {
+        onScan(scanned);
+        bufferRef.current = "";
+        if (inputRef.current?.input) {
+          inputRef.current.input.value = ""; // Xóa giá trị hiển thị
+          inputRef.current.focus(); // Focus lại input
+          setValue("");
+        }
+      }
+    } else {
+      if (!charset.includes(key)) return;
+      bufferRef.current += key;
+      setValue(bufferRef.current); // cập nhật giá trị hiển thị
+    }
+  };
+
   return (
-    <div>
-      <p>📦 Dữ liệu đã quét: <strong>{scanned}</strong></p>
-    </div>
-  )
+    <Input
+      ref={inputRef}
+      className="w-full input-barcode"
+      onKeyDown={handleInputBarcode}
+      placeholder="Quét hoặc nhập mã barcode..."
+      value={value}
+      onBlur={() => {
+        setValue("")
+        bufferRef.current = "";
+      }}
+    />
+  );
 }
 
 export default InputBarcode;

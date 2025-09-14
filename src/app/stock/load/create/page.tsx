@@ -4,7 +4,7 @@ import CreateStockContainer from "docker-manager-web/app/stock/load/create/Creat
 
 export const metadata: Metadata = {
   title: 'Tạo lên hàng | Gia Phước Express',
-  description: 'Tạo lên hàng'
+  description: 'Tạo lên hàng',
 }
 
 function CreateStockLoadPage() {
